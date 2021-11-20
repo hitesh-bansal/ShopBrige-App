@@ -10,7 +10,7 @@ namespace ShopBrige_App.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Items");
         }
 
         public ActionResult About()
