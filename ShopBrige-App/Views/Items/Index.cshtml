@@ -1,0 +1,105 @@
+﻿@model IEnumerable<ShopBrige_App.Models.InventoryItem>
+@{
+    ViewBag.Title = "Items";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Items</h2>
+<p>
+    @Html.ActionLink("Add New Item", "New", "Items", null, new { @class = "btn btn-primary" })
+</p>
+@*<table id="items" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.ActionLink(item.Name, "Edit", "Items", new { id = item.ID }, null)</td>
+                <td>
+                    <button data-item-id="@item.ID" class="btn-link js-delete">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>*@
+
+<table id="items" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            //$("#items").DataTable({
+            //    ajax: {
+            //        url: "/api/items",
+            //        dataSrc: ""
+            //    },
+            //    columns: [
+            //        {
+            //            data: "name",
+            //            render: function (data, type, item) {
+            //                return "<a href='/items/edit/" + item.id + "'>" + item.Name + "</a>";
+            //            }
+            //        },
+            //        {
+            //            data: "id",
+            //            render: function (data) {
+            //                return "<button class='btn-link js-delete' data-item-id=" + data + ">Delete</button>";
+            //            }
+            //        }
+            //    ]
+            //});
+            /*$("#items").DataTable();*/
+            var table = $("#items").DataTable({
+                ajax: {
+                    url: "/api/items",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "name",
+                        render: function (data, type, item) {
+                            return "<a href='/items/edit/" + item.id + "'>" + item.name + "</a>";
+                        }
+                    },
+                    {
+                        data: "Id",
+                        render: function (data, type, item) {
+                            return "<button class='btn-link js-delete' data-item-id=" + item.id + ">Delete</button>";
+                        }
+                    }
+                ]
+            });
+
+
+            $("#items").on("click", ".js-delete",function () {
+                var button = $(this);
+                if (confirm("Are you sure you want to delete this inventory item?")) {
+                        $.ajax({
+                            url: "/api/items/" + button.attr("data-item-id"),
+                            method: "DELETE",
+                            success: function () {
+                                console.log("Success")
+                                //button.parents("tr").remove();
+                                table.row(button.parents("tr")).remove().draw();
+                            }
+                        });
+                }
+            });
+        });
+    </script>
+}
+
